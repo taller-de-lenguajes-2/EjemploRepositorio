@@ -42,7 +42,6 @@ namespace Parcial2.Repositorios
             SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
             var director = new Director();
             SQLiteCommand command = connection.CreateCommand();
-            command.CommandText = $"SELECT * FROM directors WHERE id = '{idDirector}';";
             command.CommandText = "SELECT * FROM directors WHERE id = @idDirector";
             command.Parameters.Add(new SQLiteParameter("@idDirector", idDirector));
             connection.Open();
@@ -82,8 +81,10 @@ namespace Parcial2.Repositorios
         
         public void Update (Director director)
         {
+            // usar using
             SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
             SQLiteCommand command = connection.CreateCommand();
+            // No usar así usar, el AddParameter
             command.CommandText = $"UPDATE directors SET name = '{director.Name}', gender = '{director.Gender}', uid = '{director.Uid}' WHERE id = '{director.Id}';";
             connection.Open();
             command.ExecuteNonQuery();
@@ -92,8 +93,10 @@ namespace Parcial2.Repositorios
 
         public void Remove(int id)
         {
+            // usar using
             SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
             SQLiteCommand command = connection.CreateCommand();
+            // usar AddParameter
             command.CommandText = $"DELETE FROM directors WHERE id = '{id}';";
             connection.Open();
             command.ExecuteNonQuery();
