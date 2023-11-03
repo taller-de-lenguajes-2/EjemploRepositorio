@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Parcial2.Models;
 
 namespace Parcial2.Repositorios
@@ -15,12 +15,12 @@ namespace Parcial2.Repositorios
         {
             var queryString = @"SELECT * FROM directors;";
             List<Director> directores = new List<Director>();
-            using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
-                SqliteCommand command = new SqliteCommand(queryString, connection);
+                SQLiteCommand command = new SQLiteCommand(queryString, connection);
                 connection.Open();
             
-                using(SqliteDataReader reader = command.ExecuteReader())
+                using(SQLiteDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
@@ -39,12 +39,14 @@ namespace Parcial2.Repositorios
 
         public Director GetById(int idDirector)
         {
-            SqliteConnection connection = new SqliteConnection(cadenaConexion);
+            SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
             var director = new Director();
-            SqliteCommand command = connection.CreateCommand();
+            SQLiteCommand command = connection.CreateCommand();
             command.CommandText = $"SELECT * FROM directors WHERE id = '{idDirector}';";
+            command.CommandText = "SELECT * FROM directors WHERE id = @idDirector";
+            command.Parameters.Add(new SQLiteParameter("@idDirector", idDirector));
             connection.Open();
-            using(SqliteDataReader reader = command.ExecuteReader())
+            using(SQLiteDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
@@ -62,15 +64,15 @@ namespace Parcial2.Repositorios
         public void Create(Director director)
         {
             var query = $"INSERT INTO directors (name, gender, uid) VALUES (@name,@gender,@uid)";
-            using (SqliteConnection connection = new SqliteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
 
                 connection.Open();
-                var command = new SqliteCommand(query, connection);
+                var command = new SQLiteCommand(query, connection);
 
-                command.Parameters.Add(new SqliteParameter("@name", director.Name));
-                command.Parameters.Add(new SqliteParameter("@gender", director.Gender));
-                command.Parameters.Add(new SqliteParameter("@uid", director.Uid));
+                command.Parameters.Add(new SQLiteParameter("@name", director.Name));
+                command.Parameters.Add(new SQLiteParameter("@gender", director.Gender));
+                command.Parameters.Add(new SQLiteParameter("@uid", director.Uid));
 
                 command.ExecuteNonQuery();
 
@@ -80,8 +82,8 @@ namespace Parcial2.Repositorios
         
         public void Update (Director director)
         {
-            SqliteConnection connection = new SqliteConnection(cadenaConexion);
-            SqliteCommand command = connection.CreateCommand();
+            SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
+            SQLiteCommand command = connection.CreateCommand();
             command.CommandText = $"UPDATE directors SET name = '{director.Name}', gender = '{director.Gender}', uid = '{director.Uid}' WHERE id = '{director.Id}';";
             connection.Open();
             command.ExecuteNonQuery();
@@ -90,8 +92,8 @@ namespace Parcial2.Repositorios
 
         public void Remove(int id)
         {
-            SqliteConnection connection = new SqliteConnection(cadenaConexion);
-            SqliteCommand command = connection.CreateCommand();
+            SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
+            SQLiteCommand command = connection.CreateCommand();
             command.CommandText = $"DELETE FROM directors WHERE id = '{id}';";
             connection.Open();
             command.ExecuteNonQuery();
