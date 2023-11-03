@@ -13,7 +13,9 @@ var repositorio = new DirectoresRepository();
 directores = repositorio.GetAll();
 
 var director = repositorio.GetById(directores[0].Id);
-int a =3;
+repositorio.Create(director);
+directores = repositorio.GetAll();
+int a =4;
 
 // using (SQLiteConnection connection = new SQLiteConnection(@"Data Source=DB/movie.db;Cache=Shared"))
 // {
